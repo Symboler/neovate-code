@@ -1199,7 +1199,7 @@ export const providers: ProvidersMap = {
     apiEnv: ['DEEPSEEK_API_BASE'],
     doc: 'https://platform.deepseek.com/api-docs/pricing',
     models: {
-      'deepseek-chat': models['deepseek-v3-2-exp'],
+      'deepseek-chat': models['deepseek-v3.2'],
       'deepseek-reasoner': models['deepseek-r1-0528'],
     },
     createModel: defaultModelCreator,
@@ -1497,6 +1497,8 @@ export const providers: ProvidersMap = {
       'ZhipuAI/GLM-4.5': models['glm-4.5'],
       'ZhipuAI/GLM-4.5V': models['glm-4.5v'],
       'ZhipuAI/GLM-4.6': models['glm-4.6'],
+      'deepseek-ai/DeepSeek-V3.2': models['deepseek-v3.2'],
+      'deepseek-ai/DeepSeek-V3.2-Speciale': models['deepseek-v3.2-speciale'],
     },
     createModel: defaultModelCreator,
   },
