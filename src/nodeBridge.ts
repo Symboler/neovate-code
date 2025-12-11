@@ -1428,6 +1428,8 @@ class NodeHandlerRegistry {
           message: jsonlLogger.addMessage({
             message: normalizedMessage,
           }),
+          sessionId,
+          cwd,
         });
         previousUuid = normalizedMessage.uuid;
       }
