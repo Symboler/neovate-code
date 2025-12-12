@@ -88,6 +88,49 @@ type GitCloneOutput = {
   needsCredentials?: boolean;
 };
 
+type GitStatusInput = {
+  cwd: string;
+};
+type GitStatusOutput = {
+  success: boolean;
+  data?: {
+    isRepo: boolean;
+    hasUncommittedChanges: boolean;
+    hasStagedChanges: boolean;
+    isGitInstalled: boolean;
+    isUserConfigured: { name: boolean; email: boolean };
+  };
+  error?: string;
+};
+
+type GitStageInput = {
+  cwd: string;
+  all?: boolean;
+};
+
+type GitCommitInput = {
+  cwd: string;
+  message: string;
+  noVerify?: boolean;
+};
+
+type GitPushInput = {
+  cwd: string;
+};
+
+type GitCreateBranchInput = {
+  cwd: string;
+  name: string;
+};
+type GitCreateBranchOutput = {
+  success: boolean;
+  data?: {
+    branchName: string;
+    wasRenamed: boolean;
+  };
+  error?: string;
+};
+
 // ============================================================================
 // MCP Handlers
 // ============================================================================
@@ -797,6 +840,20 @@ export type HandlerMap = {
   // Git handlers
   'git.clone': { input: GitCloneInput; output: GitCloneOutput };
   'git.clone.cancel': { input: { taskId: string }; output: SuccessResponse };
+  'git.status': { input: GitStatusInput; output: GitStatusOutput };
+  'git.stage': {
+    input: GitStageInput;
+    output: SuccessResponse | ErrorResponse;
+  };
+  'git.commit': {
+    input: GitCommitInput;
+    output: SuccessResponse | ErrorResponse;
+  };
+  'git.push': { input: GitPushInput; output: SuccessResponse | ErrorResponse };
+  'git.createBranch': {
+    input: GitCreateBranchInput;
+    output: GitCreateBranchOutput;
+  };
 
   // MCP handlers
   'mcp.getStatus': { input: McpGetStatusInput; output: McpGetStatusOutput };
