@@ -26,6 +26,13 @@ export interface AgentDefinition {
   isEnabled?: boolean | ((context: Context) => boolean);
 }
 
+export type PluginAgentDefinition = Omit<
+  AgentDefinition,
+  'source' | 'model'
+> & {
+  model?: string;
+};
+
 export interface TaskToolInput {
   description: string;
   prompt: string;
