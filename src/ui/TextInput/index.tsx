@@ -2,6 +2,7 @@ import chalk from 'chalk';
 import { type Key, Text, useInput } from 'ink';
 import React from 'react';
 import { PASTE_CONFIG } from '../constants';
+import { useAppStore } from '../store';
 import { useTerminalSize } from '../useTerminalSize';
 import { darkTheme } from './constant';
 import { useTextInput } from './hooks/useTextInput';
@@ -202,8 +203,6 @@ export type Props = {
   readonly onReverseSearchPrevious?: () => void;
 
   onCtrlBBackground?: () => void;
-
-  onFocusChange?: (focused: boolean) => void;
 };
 
 export default function TextInput({
@@ -238,7 +237,6 @@ export default function TextInput({
   onReverseSearch,
   onReverseSearchPrevious,
   onCtrlBBackground,
-  onFocusChange,
 }: Props): React.JSX.Element {
   const { columns: terminalWidth } = useTerminalSize();
 
@@ -448,7 +446,7 @@ export default function TextInput({
     // \x1b[I (focus gained) and \x1b[O (focus lost). Ink strips the \x1b prefix,
     // leaving '[I' and '[O' which we intercept to update focus state.
     if (input === '[I' || input === '[O') {
-      onFocusChange?.(input === '[I');
+      useAppStore.getState().setWindowFocused(input === '[I');
       return;
     }
 

@@ -1,6 +1,6 @@
 import { Box, Text } from 'ink';
 import os from 'os';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { SPACING, UI_COLORS } from './constants';
 import { DebugRandomNumber } from './Debug';
 import { MemoryModal } from './MemoryModal';
@@ -14,7 +14,6 @@ import { useExternalEditor } from './useExternalEditor';
 import { useInputHandlers } from './useInputHandlers';
 import { useTerminalSize } from './useTerminalSize';
 import { useTryTips } from './useTryTips';
-import { useWindowFocus } from './useWindowFocus';
 
 export function ChatInput() {
   const {
@@ -26,7 +25,15 @@ export function ChatInput() {
     reverseSearch,
   } = useInputHandlers();
   const { currentTip } = useTryTips();
-  const { isWindowFocused, handleFocusChange } = useWindowFocus();
+
+  // Enable terminal focus reporting
+  useEffect(() => {
+    if (!process.stdin.isTTY) return;
+    process.stdout.write('\x1b[?1004h');
+    return () => {
+      process.stdout.write('\x1b[?1004l');
+    };
+  }, []);
 
   // Memoize platform-specific modifier key to avoid repeated os.platform() calls
   const modifierKey = useMemo(
@@ -48,6 +55,7 @@ export function ChatInput() {
     bashBackgroundPrompt,
     bridge,
     thinking,
+    isWindowFocused,
   } = useAppStore();
   const { columns } = useTerminalSize();
   const { handleExternalEdit } = useExternalEditor({
@@ -231,7 +239,6 @@ export function ChatInput() {
               onCtrlBBackground={
                 bashBackgroundPrompt ? handleMoveToBackground : undefined
               }
-              onFocusChange={handleFocusChange}
             />
             <DebugRandomNumber />
           </Box>

@@ -164,6 +164,9 @@ interface AppState {
 
   // Transcript mode for agent progress display
   transcriptMode: boolean;
+
+  // Window focus state for cursor visibility
+  isWindowFocused: boolean;
 }
 
 type InitializeOpts = {
@@ -253,6 +256,7 @@ interface AppActions {
   }) => void;
   clearAgentProgress: (toolUseId: string) => void;
   toggleTranscriptMode: () => void;
+  setWindowFocused: (focused: boolean) => void;
 }
 
 export type AppStore = AppState & AppActions;
@@ -312,6 +316,9 @@ export const useAppStore = create<AppStore>()(
       // SubAgent progress state
       agentProgressMap: {},
       transcriptMode: false,
+
+      // Window focus state
+      isWindowFocused: true,
 
       bashBackgroundPrompt: null,
 
@@ -1273,6 +1280,10 @@ export const useAppStore = create<AppStore>()(
 
       toggleTranscriptMode: () => {
         set({ transcriptMode: !get().transcriptMode });
+      },
+
+      setWindowFocused: (focused: boolean) => {
+        set({ isWindowFocused: focused });
       },
     }),
     { name: 'app-store' },
