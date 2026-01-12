@@ -284,6 +284,85 @@ function GettingStartedTips() {
       <Text>
         4. <Text bold>/help</Text> for more information
       </Text>
+    </Box>
+  );
+}
+
+function ModelConfigurationWarning() {
+  const { model, providers, initializeModelError } = useAppStore();
+  if (model) {
+    return null;
+  }
+
+  return (
+    <Box flexDirection="column">
+      <Box
+        flexDirection="column"
+        marginTop={1}
+        borderStyle="round"
+        borderColor="yellow"
+        padding={1}
+      >
+        <Text bold color="yellow">
+          ! Model Configuration Required
+        </Text>
+        <Box marginTop={1} flexDirection="column">
+          <Text>
+            You haven't configured a model yet. Here are available providers:
+          </Text>
+        </Box>
+        <Box marginTop={1} flexDirection="column">
+          {Object.values(providers).map((provider) => {
+            const enrichedProvider = provider as unknown as EnrichedProvider;
+            const descriptions: string[] = [];
+
+            // Add valid environment variables info
+            if (
+              enrichedProvider.validEnvs &&
+              enrichedProvider.validEnvs.length > 0
+            ) {
+              descriptions.push(
+                `${symbols.tick} Envs: ${enrichedProvider.validEnvs.join(', ')}`,
+              );
+            }
+
+            // Add API key status
+            if (enrichedProvider.hasApiKey) {
+              descriptions.push(`${symbols.tick} Logged`);
+            }
+
+            const description = descriptions.join(' | ');
+
+            return (
+              <Box key={enrichedProvider.id}>
+                <Text color="cyan">
+                  {symbols.bullet} {enrichedProvider.name}
+                </Text>
+                {description && <Text> → {pc.gray(`(${description})`)}</Text>}
+              </Box>
+            );
+          })}
+        </Box>
+        <Box marginTop={1} flexDirection="column">
+          <Text>Suggested actions:</Text>
+          <Box marginTop={1} flexDirection="column">
+            <Text>
+              {symbols.bullet}{' '}
+              <Text bold color="cyan">
+                /login
+              </Text>{' '}
+              - Configure API key for a provider
+            </Text>
+            <Text>
+              {symbols.bullet}{' '}
+              <Text bold color="cyan">
+                /model
+              </Text>{' '}
+              - Select a model to use
+            </Text>
+          </Box>
+        </Box>
+      </Box>
       {initializeModelError && (
         <Box marginTop={1}>
           <Text color="red">
@@ -291,83 +370,6 @@ function GettingStartedTips() {
           </Text>
         </Box>
       )}
-    </Box>
-  );
-}
-
-function ModelConfigurationWarning() {
-  const { model, providers } = useAppStore();
-  if (model) {
-    return null;
-  }
-
-  return (
-    <Box
-      flexDirection="column"
-      marginTop={1}
-      borderStyle="round"
-      borderColor="yellow"
-      padding={1}
-    >
-      <Text bold color="yellow">
-        ! Model Configuration Required
-      </Text>
-      <Box marginTop={1} flexDirection="column">
-        <Text>
-          You haven't configured a model yet. Here are available providers:
-        </Text>
-      </Box>
-      <Box marginTop={1} flexDirection="column">
-        {Object.values(providers).map((provider) => {
-          const enrichedProvider = provider as unknown as EnrichedProvider;
-          const descriptions: string[] = [];
-
-          // Add valid environment variables info
-          if (
-            enrichedProvider.validEnvs &&
-            enrichedProvider.validEnvs.length > 0
-          ) {
-            descriptions.push(
-              `${symbols.tick} Envs: ${enrichedProvider.validEnvs.join(', ')}`,
-            );
-          }
-
-          // Add API key status
-          if (enrichedProvider.hasApiKey) {
-            descriptions.push(`${symbols.tick} Logged`);
-          }
-
-          const description = descriptions.join(' | ');
-
-          return (
-            <Box key={enrichedProvider.id}>
-              <Text color="cyan">
-                {symbols.bullet} {enrichedProvider.name}
-              </Text>
-              {description && <Text> → {pc.gray(`(${description})`)}</Text>}
-            </Box>
-          );
-        })}
-      </Box>
-      <Box marginTop={1} flexDirection="column">
-        <Text>Suggested actions:</Text>
-        <Box marginTop={1} flexDirection="column">
-          <Text>
-            {symbols.bullet}{' '}
-            <Text bold color="cyan">
-              /login
-            </Text>{' '}
-            - Configure API key for a provider
-          </Text>
-          <Text>
-            {symbols.bullet}{' '}
-            <Text bold color="cyan">
-              /model
-            </Text>{' '}
-            - Select a model to use
-          </Text>
-        </Box>
-      </Box>
     </Box>
   );
 }

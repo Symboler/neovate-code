@@ -1962,6 +1962,7 @@ export const providers: ProvidersMap = {
     api: 'https://hub.modelwatch.dev/v1/',
     doc: 'https://hub.modelwatch.dev/',
     models: {
+      'qwen3-coder-plus': models['qwen3-coder-plus'],
       'glm-4.7': models['glm-4.7'],
       'gemini-2.5-flash': models['gemini-2.5-flash'],
       'gemini-3-flash': models['gemini-3-flash-preview'],

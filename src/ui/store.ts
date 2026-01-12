@@ -497,7 +497,13 @@ export const useAppStore = create<AppStore>()(
           brainstormMode,
           status,
           pastedTextMap,
+          initializeModelError,
         } = get();
+
+        if (initializeModelError) {
+          get().setInputError(initializeModelError);
+          return;
+        }
 
         if (brainstormMode) {
           message = `/spec:brainstorm ${message}`;
