@@ -1983,9 +1983,6 @@ export const providers: ProvidersMap = {
       if (name.startsWith('gpt-')) {
         return openaiModelResponseCreator(name, provider);
       }
-      if (name === 'glm-4.7') {
-        name = 'zai-glm-4.7';
-      }
       return defaultModelCreator(name, provider);
     },
   },
