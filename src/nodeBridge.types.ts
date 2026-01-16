@@ -263,6 +263,7 @@ type ModelsListOutput = {
 type ModelsTestInput = {
   cwd?: string;
   model: string;
+  timeout?: number; // Default 15000ms (15 seconds)
 };
 type ModelsTestOutput =
   | {

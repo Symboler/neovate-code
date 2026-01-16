@@ -469,6 +469,7 @@ class NodeHandlerRegistry {
     this.messageBus.registerHandler('models.test', async (data) => {
       const { model: modelStr } = data;
       const cwd = data.cwd || require('os').tmpdir();
+      const timeout = data.timeout ?? 15000; // Default 15 seconds
       const prompt = 'hi';
       try {
         const context = await this.getContext(cwd);
@@ -485,11 +486,21 @@ class NodeHandlerRegistry {
         }
 
         // Test the model by sending a simple request with no system prompt
-        const result = await query({
-          userPrompt: prompt,
-          model,
-          systemPrompt: '',
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          setTimeout(
+            () => reject(new Error(`Model test timed out after ${timeout}ms`)),
+            timeout,
+          );
         });
+
+        const result = await Promise.race([
+          query({
+            userPrompt: prompt,
+            model,
+            systemPrompt: '',
+          }),
+          timeoutPromise,
+        ]);
 
         if (!result.success) {
           return {
