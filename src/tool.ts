@@ -4,6 +4,7 @@ import * as z from 'zod';
 import type { Context } from './context';
 import type { ImagePart, TextPart } from './message';
 import { resolveModelWithContext } from './model';
+import { PluginHookType } from './plugin';
 import { createAskUserQuestionTool } from './tools/askUserQuestion';
 import {
   createBashOutputTool,
@@ -29,6 +30,7 @@ type ResolveToolsOpts = {
   askUserQuestion?: boolean;
   signal?: AbortSignal;
   task?: boolean;
+  isPlan?: boolean;
 };
 
 export async function resolveTools(opts: ResolveToolsOpts) {
@@ -97,7 +99,7 @@ export async function resolveTools(opts: ResolveToolsOpts) {
   ];
 
   const toolsConfig = opts.context.config.tools;
-  const availableTools = (() => {
+  let availableTools = (() => {
     if (!toolsConfig || Object.keys(toolsConfig).length === 0) {
       return allTools;
     }
@@ -107,6 +109,17 @@ export async function resolveTools(opts: ResolveToolsOpts) {
       return !isDisabled;
     });
   })();
+
+  try {
+    availableTools = await opts.context.apply({
+      hook: 'tool',
+      args: [{ isPlan: opts.isPlan, sessionId: opts.sessionId }],
+      memo: availableTools,
+      type: PluginHookType.SeriesMerge,
+    });
+  } catch (error) {
+    console.warn('[resolveTools] Plugin tool hook failed:', error);
+  }
 
   const taskTools = (() => {
     // Task tool is only available in quiet mode
