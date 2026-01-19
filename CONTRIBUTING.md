@@ -93,6 +93,8 @@ $ pnpm release:minor
 $ pnpm release:major
 ```
 
+After running the release command, use `/share-release` to generate release share.
+
 ## Join the Team
 
 If you frequently contribute to Neovate Code (bug fixes, features, documentation, etc.), you may be invited to:
