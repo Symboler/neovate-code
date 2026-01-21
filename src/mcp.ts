@@ -340,7 +340,7 @@ export class MCPManager {
       let args = config.args;
       const isWin = process.platform === 'win32';
       if (isWin && windowsShellCommands.includes(command)) {
-        args = ['/c', command, ...(args||[])];
+        args = ['/c', command, ...(args || [])];
         command = 'cmd.exe';
       }
       return experimental_createMCPClient({
